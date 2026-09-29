@@ -19,3 +19,9 @@ westquant-merge-traces \
   qiskit-results/ pytket-results/ pennylane-results/ pulser-results/ \
   --output results/cross-framework
 ```
+
+## CUDA-Q passports
+
+`normalize_execution_passport` converts a `westquant-cudaq` execution passport
+into the canonical `wqt-policy-v0.1` record format, preserving backend,
+environment, runtime, memory, quality, QPU-job, and shot information.

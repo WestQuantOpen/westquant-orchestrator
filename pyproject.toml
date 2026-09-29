@@ -4,12 +4,16 @@ build-backend="setuptools.build_meta"
 
 [project]
 name="westquant-orchestrator"
-version="0.1.0a1"
+version="0.1.1"
 readme = "README.md"
 description="Cross-framework orchestration, trace normalization, and evaluation for WestQuant Open"
 requires-python=">=3.10"
-license={text="Apache-2.0"}
-dependencies=["westquant-core>=0.2.0a1"]
+license="Apache-2.0"
+dependencies=["westquant-core>=0.2.1"]
+
+[project.optional-dependencies]
+cudaq=["westquant-cudaq>=0.1.0"]
+test=["pytest>=8"]
 
 [project.scripts]
 westquant-merge-traces="westquant_orchestrator.cli:main"
@@ -17,9 +21,6 @@ westquant-merge-traces="westquant_orchestrator.cli:main"
 [project.urls]
 Homepage = "https://github.com/WestQuantOpen"
 Source = "https://github.com/WestQuantOpen/westquant-orchestrator"
-
-[project.optional-dependencies]
-test=["pytest>=8"]
 
 [tool.setuptools.packages.find]
 where=["src"]

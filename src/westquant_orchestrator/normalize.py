@@ -62,6 +62,36 @@ def normalize_record(record: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
+def normalize_execution_passport(passport: dict[str, Any]) -> dict[str, Any]:
+    workload = dict(passport.get("workload", {}))
+    representation = dict(passport.get("representation", {}))
+    backend = dict(passport.get("backend", {}))
+    prediction = dict(passport.get("prediction", {}))
+    allocation = dict(passport.get("allocation", {}))
+    run_id = str(passport.get("run_id", workload.get("workload_id", "unknown")))
+    representation_name = str(representation.get("name", "unknown"))
+    backend_name = str(backend.get("name", "unknown"))
+    return normalize_record({
+        "framework": "cuda-q",
+        "challenge_id": str(workload.get("workload_id", run_id)),
+        "state_id": f"{run_id}:planned",
+        "next_state_id": f"{run_id}:executed",
+        "step_index": 0,
+        "stage": "execution",
+        "action": {"name": "execute", "parameters": {"representation": representation_name, "backend": backend_name}},
+        "success": bool(passport.get("result", {}).get("success", True)),
+        "selectable": True,
+        "verification": {"equivalence": "unknown", "verified": False},
+        "metrics_before": {},
+        "metrics_after": {"runtime_s": prediction.get("runtime_s"), "quality": prediction.get("quality")},
+        "cost": {"memory_bytes": prediction.get("memory_bytes"), "qpu_jobs": allocation.get("qpu_jobs"), "shots": allocation.get("shots")},
+        "kept_in_beam": True,
+        "terminal": True,
+        "error": passport.get("result", {}).get("error"),
+        "context": {"backend": backend, "environment": passport.get("environment", {})},
+    })
+
+
 def record_identity(record: dict[str, Any]) -> tuple[Any, ...]:
     action = record.get("action") or {}
     return (
